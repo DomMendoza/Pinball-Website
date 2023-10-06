@@ -1,4 +1,4 @@
-import Data from '../data';
+import Data from '../connection/data';
 
 const config = JSON.stringify(Data[0][0], null, 2);
 const Snippet = () => {

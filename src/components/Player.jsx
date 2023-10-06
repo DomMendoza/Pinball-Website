@@ -13,7 +13,7 @@ import VideoSettingsIcon from '@mui/icons-material/VideoSettings';
 import CenterFocusWeakIcon from '@mui/icons-material/CenterFocusWeak';
 import { ToastContainer, toast } from 'react-toastify';
 import Snippet from './Snippet';
-import Data from '../data';
+import Data from '../connection/data';
 import 'react-toastify/dist/ReactToastify.css';
 import './style.css';
 import {
@@ -573,7 +573,7 @@ function Player() {
             <Wrapper>
                 <Info>
                     <InfoLeft>
-                        <Title>nanoStream H5Live Player</Title>
+                        <Title>nanoStream H5Live Player on Player.jsx</Title>
                         <TitleSpan>Interactive Live Streaming</TitleSpan>
                     </InfoLeft>
                     <InfoRight />

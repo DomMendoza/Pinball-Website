@@ -174,7 +174,7 @@ export const StreamList = styled.li`
 `;
 
 export const CodeWrapper = styled.div`
-    display: flex;
+    display: none;
     justify-content: space-between;
     flex-wrap: wrap;
 `;
