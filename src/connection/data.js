@@ -5,7 +5,7 @@ const Data = [
             source: {
                 //GROUP OF STREAMS
                 group: {
-                    // id: 'fdfff19e-6738-4822-b832-ac490b8e5851',
+                    // id: 'e21b17df-b105-413b-a830-92a49303e119',
                     // apiurl: 'https://bintu.nanocosmos.de',
                     id: '6144a573-d337-4e7c-a7bb-845e08e5f962',
                     apiurl: 'https://bintu-dev-k8s.nanocosmos.de',
