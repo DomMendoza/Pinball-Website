@@ -5,10 +5,10 @@ const Data = [
             source: {
                 //GROUP OF STREAMS
                 group: {
-                    // id: 'e21b17df-b105-413b-a830-92a49303e119',
-                    // apiurl: 'https://bintu.nanocosmos.de',
-                    id: '6144a573-d337-4e7c-a7bb-845e08e5f962',
-                    apiurl: 'https://bintu-dev-k8s.nanocosmos.de',
+                    id: '9b1e7c55-1db0-40e9-b443-07f0b5290dd3',
+                    apiurl: 'https://bintu.nanocosmos.de',
+                    // id: '6144a573-d337-4e7c-a7bb-845e08e5f962',
+                    // apiurl: 'https://bintu-dev-k8s.nanocosmos.de',
                     startQuality: 'medium-low'
                 },
                 startIndex: 0,

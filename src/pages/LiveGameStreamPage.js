@@ -1,12 +1,30 @@
 /* eslint-disable */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 // import button from rea
 import { Button, ButtonGroup } from '@mui/material';
+import { io } from 'socket.io-client';
 
 export default function LiveGameStreamPage() {
     const [betAmount, setBetAmount] = useState('');
     const [totalBet, setTotalBet] = useState('');
     const [totalCredits, setTotalCredits] = useState('50,000');
+
+    // useEffect(() => {
+    //     const socket = io('http://10.236.1.120:4444'); // Connect to OBS WebSocket
+
+    //     socket.on('connect', () => {
+    //         console.log('Connected to OBS WebSocket');
+    //         // Send messages to control OBS here
+    //     });
+
+    //     socket.on('disconnect', () => {
+    //         console.log('Disconnected from OBS WebSocket');
+    //     });
+
+    //     return () => {
+    //         socket.disconnect(); // Clean up on component unmount
+    //     };
+    // }, []);
 
     const handleButtonClick = (value) => {
         setBetAmount((prevValue) => prevValue + value);
@@ -57,7 +75,7 @@ export default function LiveGameStreamPage() {
                     allowfullscreen
                     width="1280"
                     height="720"
-                    // src="https://demo.nanocosmos.de/nanoplayer/embed/1.3.3/nanoplayer.html?group.id=e21b17df-b105-413b-a830-92a49303e119"
+                    src="https://demo.nanocosmos.de/nanoplayer/embed/1.3.3/nanoplayer.html?group.id=9b1e7c55-1db0-40e9-b443-07f0b5290dd3&options.adaption.rule=deviationOfMean2&startIndex=0&playback.latencyControlMode=classic"
                 ></iframe>
                 <div className="flex-1 flex w-[1280px] h-auto border-2 border-red-600">
                     <div className="flex-1 flex flex-col border-2 border-blue-600">
