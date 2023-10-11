@@ -6,7 +6,7 @@ import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
 // import Player from './components/Player';
 import LiveGameStreamPage from './pages/LiveGameStreamPage';
-import Tester from './pages/Tester';
+// import AdminPage from './pages/AdminPage';
 
 function App() {
     return (
@@ -14,8 +14,8 @@ function App() {
         //     <Player />
         // </>
         // <Player />
-        // <LiveGameStreamPage />
-        <Tester />
+        <LiveGameStreamPage />
+        // <AdminPage />
     );
 }
 

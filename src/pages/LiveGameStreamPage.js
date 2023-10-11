@@ -1,70 +1,106 @@
 /* eslint-disable */
 import React, { useState, useEffect } from 'react';
 // import button from rea
-import { Button, ButtonGroup } from '@mui/material';
-import { io } from 'socket.io-client';
+import { Alert, Button, ButtonGroup } from '@mui/material';
+import OBSWebSocket from 'obs-websocket-js';
 
 export default function LiveGameStreamPage() {
+    const [selectedColorName, setSelectedColorName] = useState('');
+    const [selectedColorHex, setSelectedColorHex] = useState('');
     const [betAmount, setBetAmount] = useState('');
     const [totalBet, setTotalBet] = useState('');
-    const [totalCredits, setTotalCredits] = useState('50,000');
+    const [totalCredits, setTotalCredits] = useState('50000');
+    const [currentProgramScene, setCurrentProgramScene] = useState();
+    const numGroup1 = ['1', '2', '3'];
+    const numGroup2 = ['4', '5', '6'];
+    const numGroup3 = ['7', '8', '9'];
+    const colorHex = ['#FF0000', '#008000', '#FFFF00', '#0000FF', '#800080', '#FFA500', '#FFC0CB', '#00FFFF'];
+    const colorName = ['red', 'green', 'yellow', 'blue', 'violet', 'orange', 'pink', 'cyan', 'gold'];
 
-    // useEffect(() => {
-    //     const socket = io('http://10.236.1.120:4444'); // Connect to OBS WebSocket
+    const obsAddress = 'ws://127.0.0.1:4455';
+    const obs = new OBSWebSocket();
 
-    //     socket.on('connect', () => {
-    //         console.log('Connected to OBS WebSocket');
-    //         // Send messages to control OBS here
-    //     });
+    useEffect(() => {
+        (async () => {
+            try {
+                //OBS websocket connection
+                await obs.connect(obsAddress);
+                console.log(`Connected to OBS`);
 
-    //     socket.on('disconnect', () => {
-    //         console.log('Disconnected from OBS WebSocket');
-    //     });
+                //Scene change listener
+                obs.on('CurrentProgramSceneChanged', onCurrentSceneChanged);
+            } catch (error) {
+                console.error('Failed to connect', error.code, error.message);
+            }
+        })();
+    }, []);
 
-    //     return () => {
-    //         socket.disconnect(); // Clean up on component unmount
-    //     };
-    // }, []);
+    //Scene change event handler
+    const onCurrentSceneChanged = (event) => {
+        const currentScene = event.sceneName;
+        setCurrentProgramScene(currentScene);
 
-    const handleButtonClick = (value) => {
-        setBetAmount((prevValue) => prevValue + value);
+        if (currentScene === 'Place your bet') {
+            window.alert('Current scene changed to: ' + currentScene);
+        }
+        // window.alert('Current scene changed to: ' + currentScene);
+        // console.log('Current scene changed to: ', currentScene);
     };
 
+    obs.once('ExitStarted', () => {
+        console.log('OBS started shutdown');
+
+        // Just for example, not necessary should you want to reuse this instance by re-connect()
+        obs.off('CurrentProgramSceneChanged', onCurrentSceneChanged);
+    });
+
+    //keypad input
+    const handleButtonClick = (value) => {
+        const newValue = betAmount + value;
+        setBetAmount(newValue);
+    };
+
+    //keyboard input
     const handleInputChange = (e) => {
         const inputValue = e.target.value;
-        // Remove non-numeric characters
         const numericValue = inputValue.replace(/\D/g, '');
         setBetAmount(numericValue);
     };
 
-    const handleKeyDown = (e) => {
-        const isNumericKey = /^[0-9]$/i.test(e.key);
-        if (!isNumericKey) {
-            e.preventDefault();
-        }
-    };
-
-    //HINDI PA TAPOS YUNG LOGIC NG CONFIRM BET
     const handleConfirmBet = () => {
-        const intValue = parseInt(betAmount, 10);
-        const creditsIntValue = parseInt(totalCredits, 10);
+        const betAmountInteger = parseInt(betAmount);
+        const totalCreditsInteger = parseInt(totalCredits);
+        // console.log(betAmountInteger);
+        // console.log(totalCreditsInteger);
+        if (betAmountInteger !== 0 && betAmountInteger <= totalCreditsInteger) {
+            setTotalBet(betAmount);
 
-        if (!isNaN(intValue) && intValue <= creditsIntValue) {
-            setTotalBet(intValue);
+            const newCredit = totalCreditsInteger - betAmountInteger;
+            setTotalCredits(newCredit.toString());
 
-            const newCredit = creditsIntValue - intValue;
-            setTotalCredits(newCredit);
-
-            // Clear the input
-            setBetAmount('');
+            setBetAmount('0');
         } else {
             alert('Invalid bet amount or insufficient credits');
+            setBetAmount('0');
         }
     };
 
     const handleMaxButton = () => {
         setBetAmount(totalCredits);
     };
+
+    const handleClearButton = () => {
+        setBetAmount('0');
+    };
+
+    const handleColorButton = (color, index) => {
+        setSelectedColorHex(color);
+        setSelectedColorName(colorName[index]);
+    };
+
+    useEffect(() => {
+        console.log(selectedColorName);
+    }, [selectedColorName]);
 
     return (
         <div className="h-screen border-4 border-red-600">
@@ -82,82 +118,39 @@ export default function LiveGameStreamPage() {
                         <div className="grid grid-cols-3 place-items-center text-sm font-bold uppercase border-4 border-red-600 h-[15%]">
                             <p>
                                 total bet:{' '}
-                                <span className="text-[#E26226]">{`PHP ${totalBet.toLocaleString()}.00`}</span>
+                                <span className="text-[#E26226]">
+                                    {totalBet !== '' ? `PHP ${parseFloat(totalBet).toLocaleString()}.00` : '0.00'}
+                                </span>
                             </p>
                             <p>
                                 credits:{' '}
-                                <span className="text-[#E26226]">{`PHP ${totalCredits.toLocaleString()}.00`}</span>
+                                <span className="text-[#E26226]">
+                                    {totalCredits !== ''
+                                        ? `PHP ${parseFloat(totalCredits).toLocaleString()}.00`
+                                        : '0.00'}
+                                </span>
                             </p>
                             <div className="flex items-center gap-2">
                                 <p>color:</p>
-                                <div className="bg-red-600 w-16 h-5 rounded-full"></div>
+                                <div
+                                    className="w-16 h-5 rounded-full"
+                                    style={{ backgroundColor: selectedColorHex }}
+                                ></div>
                             </div>
                         </div>
                         <div className="flex-1 p-2 grid grid-cols-4 gap-2 border-4 border-green-600">
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#FF0000',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#008000',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#FFFF00',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#0000FF',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#800080',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#FFA500',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#FFC0CB',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
-                            <Button
-                                variant="contained"
-                                className="h-full w-full"
-                                style={{
-                                    backgroundColor: '#00FFFF',
-                                    borderRadius: '100px'
-                                }}
-                            ></Button>
+                            {colorHex.map((color, key) => (
+                                <Button
+                                    key={key}
+                                    variant="contained"
+                                    className="h-full w-full"
+                                    style={{
+                                        backgroundColor: color,
+                                        borderRadius: '100px'
+                                    }}
+                                    onClick={() => handleColorButton(color, key)}
+                                ></Button>
+                            ))}
                             <Button
                                 variant="contained"
                                 className="h-full w-full col-span-4"
@@ -169,6 +162,7 @@ export default function LiveGameStreamPage() {
                                     fontSize: '1.5rem',
                                     fontWeight: 'bold'
                                 }}
+                                onClick={() => handleColorButton('#FFD700', 8)}
                             >
                                 jackpot
                             </Button>
@@ -177,109 +171,52 @@ export default function LiveGameStreamPage() {
                     <div className="flex flex-col flex-1 font-bold border-2 py-2 items-center border-green-600">
                         <div className="flex flex-col w-[70%] items-center ">
                             <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('1')}
-                                >
-                                    1
-                                </Button>
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('2')}
-                                >
-                                    2
-                                </Button>
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('3')}
-                                >
-                                    3
-                                </Button>
+                                {numGroup1.map((number, index) => (
+                                    <Button
+                                        key={index}
+                                        size="small"
+                                        className="w-full"
+                                        style={{
+                                            border: '1px solid black',
+                                            color: 'black'
+                                        }}
+                                        onClick={() => handleButtonClick(number)}
+                                    >
+                                        {number}
+                                    </Button>
+                                ))}
                             </ButtonGroup>
                             <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('4')}
-                                >
-                                    4
-                                </Button>
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('5')}
-                                >
-                                    5
-                                </Button>
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('6')}
-                                >
-                                    6
-                                </Button>
+                                {numGroup2.map((number, index) => (
+                                    <Button
+                                        key={index}
+                                        size="small"
+                                        className="w-full"
+                                        style={{
+                                            border: '1px solid black',
+                                            color: 'black'
+                                        }}
+                                        onClick={() => handleButtonClick(number)}
+                                    >
+                                        {number}
+                                    </Button>
+                                ))}
                             </ButtonGroup>
                             <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('7')}
-                                >
-                                    7
-                                </Button>
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('8')}
-                                >
-                                    8
-                                </Button>
-                                <Button
-                                    size="small"
-                                    className="w-full"
-                                    style={{
-                                        border: '1px solid black',
-                                        color: 'black'
-                                    }}
-                                    onClick={() => handleButtonClick('9')}
-                                >
-                                    9
-                                </Button>
+                                {numGroup3.map((number, index) => (
+                                    <Button
+                                        key={index}
+                                        size="small"
+                                        className="w-full"
+                                        style={{
+                                            border: '1px solid black',
+                                            color: 'black'
+                                        }}
+                                        onClick={() => handleButtonClick(number)}
+                                    >
+                                        {number}
+                                    </Button>
+                                ))}
                             </ButtonGroup>
                             <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
                                 <Button
@@ -290,6 +227,7 @@ export default function LiveGameStreamPage() {
                                         backgroundColor: '#FFFF00',
                                         color: 'black'
                                     }}
+                                    onClick={() => handleClearButton()}
                                 >
                                     clear
                                 </Button>
@@ -323,10 +261,10 @@ export default function LiveGameStreamPage() {
                             {/* <span className="text-2xl  mx-auto">PHP 5,000</span> */}
                             <input
                                 type="text"
-                                value={`PHP ${betAmount}`}
+                                value={betAmount !== '' ? `PHP ${parseFloat(betAmount).toLocaleString()}` : 'PHP 0'}
                                 className="text-2xl  mx-auto text-[#E26226]"
                                 onChange={handleInputChange}
-                                onKeyDown={handleKeyDown}
+                                // onKeyDown={handleKeyDown}
                             ></input>
                         </div>
                         <div className="flex-1 border-2 w-[70%]">
