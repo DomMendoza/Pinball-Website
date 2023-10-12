@@ -2,23 +2,79 @@
 import React, { useState, useEffect } from 'react';
 // import button from rea
 import { Alert, Button, ButtonGroup } from '@mui/material';
+import axios from 'axios';
 import OBSWebSocket from 'obs-websocket-js';
+import Cookies from 'js-cookie';
+// import jwt from 'jsonwebtoken';
 
-export default function LiveGameStreamPage() {
+const LiveGameStreamPage = () => {
     const [selectedColorName, setSelectedColorName] = useState('');
     const [selectedColorHex, setSelectedColorHex] = useState('');
+    // const [userId, setUserId] = useState('');
+    // const [wallet, setWallet] = useState();
     const [betAmount, setBetAmount] = useState('');
     const [totalBet, setTotalBet] = useState('');
-    const [totalCredits, setTotalCredits] = useState('50000');
+    const [totalCredits, setTotalCredits] = useState(0);
     const [currentProgramScene, setCurrentProgramScene] = useState();
     const numGroup1 = ['1', '2', '3'];
     const numGroup2 = ['4', '5', '6'];
     const numGroup3 = ['7', '8', '9'];
     const colorHex = ['#FF0000', '#008000', '#FFFF00', '#0000FF', '#800080', '#FFA500', '#FFC0CB', '#00FFFF'];
     const colorName = ['red', 'green', 'yellow', 'blue', 'violet', 'orange', 'pink', 'cyan', 'gold'];
+    const userToken = Cookies.get('userToken');
 
     const obsAddress = 'ws://127.0.0.1:4455';
     const obs = new OBSWebSocket();
+
+    console.log(userToken);
+
+    // useEffect(() => {
+    //     const baseUrl = process.env.REACT_APP_BACKEND_URL;
+    //     const headers = {
+    //         Authorization: `Bearer ${userToken}`
+    //     };
+    //     axios
+    //         .get(`${baseUrl}/user/check/session`, { headers })
+    //         .then((response) => {
+    //             // Check the response and update the session status accordingly
+    //             if (response.status === 200) {
+    //                 // console.log(response.data.userSessionDets.user_id);
+    //                 setUserId(response.data.userSessionDets.user_id);
+    //             } else {
+    //                 console.log('User session is not active.');
+    //             }
+    //         })
+    //         .catch((error) => {
+    //             console.error('Error checking user session:', error);
+    //             console.log('Error checking user session.');
+    //         });
+    // }, [userToken]);
+
+
+    useEffect(() => {
+        const baseUrl = process.env.REACT_APP_BACKEND_URL;
+        const headers = {
+            Authorization: `Bearer ${userToken}`
+        };
+    
+        axios
+            .get(`${baseUrl}/user/wallet/amount`, {
+                headers: headers,
+                // data: data // Use the 'data' property to send the request body
+            })
+            .then((response) => {
+                if (response.status === 200) {
+                    console.log(response.data.wallet.wallet_balance);
+                    setTotalCredits(response.data.wallet.wallet_balance)
+                } else {
+                    console.log('Error:', response.status);
+                }
+            })
+            .catch((error) => {
+                console.error('Error getting wallet:', error);
+            });
+    }, []);
+    
 
     useEffect(() => {
         (async () => {
@@ -104,6 +160,7 @@ export default function LiveGameStreamPage() {
 
     return (
         <div className="h-screen border-4 border-red-600">
+            {/* <Header /> */}
             <div className="h-full flex flex-col items-center border-4 border-blue-600">
                 <iframe
                     className="border-2 border-green-600"
@@ -285,4 +342,6 @@ export default function LiveGameStreamPage() {
             </div>
         </div>
     );
-}
+};
+
+export default LiveGameStreamPage;
