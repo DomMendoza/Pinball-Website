@@ -22,7 +22,7 @@ const LoginPage = () => {
                 alert('User Login Successfully');
                 const userToken = login.data.token;
                 Cookies.set('userToken', userToken);
-                navigate("/game/pinball")
+                navigate('/game/pinball');
             } else {
                 alert('Login failed. Please check your credentials.');
             }
