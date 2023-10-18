@@ -2,17 +2,16 @@
 import React from 'react';
 import { Alert, Button, ButtonGroup } from '@mui/material';
 
-const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
+const ColorInputGrid = ({ selectedButton, colorHex, handleBetOnColor }) => {
     return (
-        <div className="flex h-[15%] border-2 border-green-600">
-            <div
+        <div className="flex-1 grid grid-cols-4 gap-2 w-full ">
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 0
                         ? {
                               backgroundColor: colorHex[0],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -24,15 +23,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                 onClick={() => handleBetOnColor(0)}
             >
                 {/* {confirmedBetAmount} */}
-            </div>
-            <div
+            </Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 1
                         ? {
                               backgroundColor: colorHex[1],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -42,15 +40,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(1)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 2
                         ? {
                               backgroundColor: colorHex[2],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -60,15 +57,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(2)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 3
                         ? {
                               backgroundColor: colorHex[3],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -78,15 +74,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(3)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 4
                         ? {
                               backgroundColor: colorHex[4],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -96,15 +91,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(4)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 5
                         ? {
                               backgroundColor: colorHex[5],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -114,15 +108,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(5)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 6
                         ? {
                               backgroundColor: colorHex[6],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -132,15 +125,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(6)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 7
                         ? {
                               backgroundColor: colorHex[7],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -150,15 +142,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(7)}
-            ></div>
-            <div
+            ></Button>
+            <Button
                 variant="contained"
-                className="h-full w-full"
+                className="h-12 w-full"
                 style={
                     selectedButton == 8
                         ? {
                               backgroundColor: colorHex[8],
-
                               borderStyle: 'solid',
                               borderWidth: '2px',
                               borderColor: 'black'
@@ -168,12 +159,41 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                           }
                 }
                 onClick={() => handleBetOnColor(8)}
-            ></div>
+            ></Button>
+            {/* <Button
+                variant="contained"
+                className="h-12 w-full col-span-4"
+                style={
+                    selectedButton == 8
+                        ? {
+                              backgroundColor: '#FFD700',
+                              borderRadius: '100px',
+                              color: 'black',
+                              padding: 0,
+                              fontSize: '1.5rem',
+                              fontWeight: 'bold',
+                              borderStyle: 'solid',
+                              borderWidth: '2px',
+                              borderColor: 'black'
+                          }
+                        : {
+                              backgroundColor: '#FFD700',
+                              borderRadius: '100px',
+                              color: 'black',
+                              padding: 0,
+                              fontSize: '1.5rem',
+                              fontWeight: 'bold'
+                          }
+                }
+                onClick={() => handleBetOnColor(8)}
+            >
+                jackpot
+            </Button> */}
             {/* {colorHex.map((color, key) => (
-                                <div
+                                <Button
                                     key={key}
                                     variant="contained"
-                                    className={color === '#FFD700' ? 'h-full w-full col-span-4' : 'h-full w-full'}
+                                    className={color === '#FFD700' ? 'h-12 w-full col-span-4' : 'h-12 w-full'}
                                     // style={{
                                     //     backgroundColor: color,
                                     //     borderRadius: '100px'
@@ -231,14 +251,14 @@ const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
                                     onClick={() => handleBetOnColor(key)}
                                 >
                                     {color === '#FFD700'
-                                        ? 'jackpot ' + (divLabels[key] || '')
-                                        : divLabels[key] === ''
+                                        ? 'jackpot ' + (buttonLabels[key] || '')
+                                        : buttonLabels[key] === ''
                                         ? ''
-                                        : `PHP ${parseFloat(divLabels[key]).toLocaleString()}`}
-                                </div>
+                                        : `PHP ${parseFloat(buttonLabels[key]).toLocaleString()}`}
+                                </Button>
                             ))} */}
         </div>
     );
 };
 
-export default ColorInputs;
+export default ColorInputGrid;

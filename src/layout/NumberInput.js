@@ -11,75 +11,86 @@ const NumberInput = ({
     handleClearButton,
     handleMaxButton
 }) => {
+    const numStyle = {
+        color: 'black',
+        fontSize: '2.5rem',
+        fontFamily: 'Poppins',
+        fontWeight: 'bold'
+    };
+
     return (
-        <div className="flex flex-col w-[70%] items-center ">
-            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
+        <div className="flex flex-col w-full h-full items-center">
+            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full h-full">
                 {numGroup1.map((number, index) => (
                     <Button
                         key={index}
-                        size="small"
-                        className="w-full"
-                        style={{
-                            border: '1px solid black',
-                            color: 'black'
-                        }}
+                        // size="large"
+                        className="w-full h-full"
+                        style={{ border: '1px solid black', position: 'relative' }}
                         onClick={() => handleButtonClick(number)}
                     >
-                        {number}
+                        <p style={numStyle} className="absolute">
+                            {number}
+                        </p>
                     </Button>
                 ))}
             </ButtonGroup>
-            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
+            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full h-full">
                 {numGroup2.map((number, index) => (
                     <Button
                         key={index}
-                        size="small"
-                        className="w-full"
-                        style={{
-                            border: '1px solid black',
-                            color: 'black'
-                        }}
+                        size="large"
+                        className="w-full h-full"
+                        style={{ border: '1px solid black', position: 'relative' }}
                         onClick={() => handleButtonClick(number)}
                     >
-                        {number}
+                        <p style={numStyle} className="absolute">
+                            {number}
+                        </p>
                     </Button>
                 ))}
             </ButtonGroup>
-            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
+            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full h-full">
                 {numGroup3.map((number, index) => (
                     <Button
                         key={index}
-                        size="small"
-                        className="w-full"
-                        style={{
-                            border: '1px solid black',
-                            color: 'black'
-                        }}
+                        size="large"
+                        className="w-full h-full"
+                        style={{ border: '1px solid black', position: 'relative' }}
                         onClick={() => handleButtonClick(number)}
                     >
-                        {number}
+                        <p style={numStyle} className="absolute">
+                            {number}
+                        </p>
                     </Button>
                 ))}
             </ButtonGroup>
-            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full">
+            <ButtonGroup variant="outlined" aria-label="outlined button group" className="w-full h-full">
                 <Button
-                    size="small"
-                    className="w-full"
+                    size="large"
+                    className="w-full h-full"
                     style={{
                         border: '1px solid black',
                         backgroundColor: '#FFFF00',
-                        color: 'black'
+                        color: 'black',
+                        fontSize: '1.5rem',
+                        fontFamily: 'Poppins',
+                        fontWeight: 'bold'
                     }}
                     onClick={() => handleClearButton()}
                 >
                     clear
                 </Button>
                 <Button
-                    size="small"
-                    className="w-full"
+                    size="large"
+                    className="w-full h-full"
                     style={{
                         border: '1px solid black',
-                        color: 'black'
+                        color: 'black',
+                        fontSize: '2.5rem',
+                        fontFamily: 'Poppins',
+                        fontWeight: 'bold',
+                        position: 'relative'
                     }}
                     onClick={() => {
                         if (betAmount !== '') {
@@ -87,15 +98,18 @@ const NumberInput = ({
                         }
                     }}
                 >
-                    0
+                    <p className="absolute">0</p>
                 </Button>
                 <Button
-                    size="small"
-                    className="w-full"
+                    size="large"
+                    className="w-full h-full"
                     style={{
                         border: '1px solid black',
                         backgroundColor: '#FF0000',
-                        color: 'white'
+                        color: 'white',
+                        fontSize: '1.5rem',
+                        fontFamily: 'Poppins',
+                        fontWeight: 'bold'
                     }}
                     onClick={handleMaxButton}
                 >

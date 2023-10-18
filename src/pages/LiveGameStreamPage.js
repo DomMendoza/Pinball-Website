@@ -11,35 +11,41 @@ import { io } from 'socket.io-client';
 import ColorInputs from '../layout/ColorInputs';
 import NumberInput from '../layout/NumberInput';
 import { postBet } from '../services/postBet';
+import { getBetHistory } from '../services/getBetHistory';
 import BetHistory from '../layout/BetHistory';
+import ColorInputGrid from '../layout/ColorInputGrid';
 
 const LiveGameStreamPage = () => {
     const [selectedColorName, setSelectedColorName] = useState('');
     const [selectedColorHex, setSelectedColorHex] = useState('');
     const [selectedButton, setSelectedButton] = useState(null); //button selected by the user
     const [userId, setUserId] = useState('');
+    const [rows, setRows] = useState([]);
     // const [wallet, setWallet] = useState();
     // const [confirmedBetAmount, setConfirmedBetAmount] = useState('');
+
     const [betAmount, setBetAmount] = useState('');
     const [totalBet, setTotalBet] = useState(0);
     const [totalCredits, setTotalCredits] = useState(0);
 
     const [currentProgramScene, setCurrentProgramScene] = useState();
+
+    const betButtons = ['50', '100', '200', '500', '1000'];
     const numGroup1 = ['1', '2', '3'];
     const numGroup2 = ['4', '5', '6'];
     const numGroup3 = ['7', '8', '9'];
     const colorHex = [
-        '#FF0000',
-        '#008000',
-        '#FFFF00',
-        '#0000FF',
-        '#800080',
-        '#FFA500',
-        '#FFC0CB',
-        '#00FFFF',
-        '#FFD700'
+        '#ED3130',
+        '#276ADD',
+        '#F4FF63',
+        '#56DE33',
+        '#FFD700',
+        '#9A3FBC',
+        '#F08F40',
+        '#DC63D0',
+        '#33C5ED'
     ];
-    const colorName = ['red', 'green', 'yellow', 'blue', 'violet', 'orange', 'pink', 'cyan', 'gold'];
+    const colorName = ['Red', 'Blue', 'Yellow', 'Green', 'Gold', 'Violet', 'Orange', 'Pink', 'Cyan'];
 
     const userToken = Cookies.get('userToken');
     // console.log('user token: ', userToken);
@@ -106,6 +112,34 @@ const LiveGameStreamPage = () => {
         })();
     }, []);
 
+    //GET BET HISTORY OF THE PLAYER
+    useEffect(() => {
+        const fetchData = async () => {
+            console.log('Fetching history...');
+            try {
+                const response = await getBetHistory(userToken);
+                // console.log('Response front:', response);
+                const updatedRows = response.map((item) => {
+                    return {
+                        date: item.createdAt.slice(0, 10),
+                        gameId: item.game_id,
+                        bet: item.bet_data,
+                        betAmount: item.amount,
+                        winLose: item.status,
+                        result: ''
+                    };
+                });
+
+                setRows(updatedRows);
+            } catch (error) {
+                console.error('Error:', error.message);
+                window.alert('An error occurred while placing the bet. Please try again later.');
+            }
+        };
+
+        fetchData(); // Call the fetchData function
+    }, []);
+
     //Scene change event handler
     const onCurrentSceneChanged = (event) => {
         const currentScene = event.sceneName;
@@ -138,6 +172,10 @@ const LiveGameStreamPage = () => {
         setBetAmount(numericValue);
     };
 
+    const handleInputButtonClick = (buttonText) => {
+        setBetAmount(buttonText);
+    };
+
     const handleConfirmBet = async () => {
         //OLD LOGIC DONT ERASE YET
         // if (buttonLabels.every((element) => element !== '')) {
@@ -154,18 +192,22 @@ const LiveGameStreamPage = () => {
         if (selectedButton !== null) {
             const betAmountInt = parseInt(betAmount);
             if (!isNaN(betAmountInt) && betAmountInt > 0) {
-                if (totalCredits > betAmountInt) {
-                    try {
-                        await postBet(selectedColorName, betAmountInt, userToken);
-                        //reset
-                        setSelectedButton(null);
-                        setBetAmount('');
-                    } catch (error) {
-                        console.error('Error:', error.message);
-                        window.alert('An error occurred while placing the bet. Please try again later.');
+                if (totalCredits > 0) {
+                    if (totalCredits > betAmountInt) {
+                        try {
+                            await postBet(selectedColorName, betAmountInt, userToken);
+                            //reset
+                            setSelectedButton(null);
+                            setBetAmount('');
+                        } catch (error) {
+                            console.error('Error:', error.message);
+                            window.alert('An error occurred while placing the bet. Please try again later.');
+                        }
+                    } else {
+                        window.alert('Insufficient Credits. Please enter a valid number.');
                     }
                 } else {
-                    window.alert('Insufficient Credits. Please enter a valid number.');
+                    window.alert('Insufficient Credits. Please add credits to bet.');
                 }
             } else {
                 window.alert('Invalid bet amount. Please enter a valid number.');
@@ -219,103 +261,170 @@ const LiveGameStreamPage = () => {
         // console.log(buttonLabels);
         // console.log('Total Bet: ', totalBet);
         // console.log(selectedButton);
-    }, [selectedColorName, selectedColorHex, betAmount, totalBet, selectedButton]);
+        // console.log(rows);
+    }, [selectedColorName, selectedColorHex, betAmount, totalBet, selectedButton, rows]);
 
     return (
-        <div className="h-full flex flex-col gap-6 items-center border-4 border-red-600">
-            {/* <Header /> */}
-            <div className="h-full flex flex-col items-center border-4 border-blue-600">
-                <iframe
-                    className="border-2 border-green-600"
-                    frameborder="0"
-                    allowfullscreen
-                    width="1280"
-                    height="720"
-                    src="https://demo.nanocosmos.de/nanoplayer/embed/1.3.3/nanoplayer.html?group.id=9b1e7c55-1db0-40e9-b443-07f0b5290dd3&options.adaption.rule=deviationOfMean2&startIndex=0&playback.latencyControlMode=classic"
-                ></iframe>
-                <div className="flex-1 flex w-[1280px] h-auto border-2 border-red-600">
-                    <div className="flex-1 flex flex-col border-2 border-blue-600">
-                        <div className="flex justify-around items-center text-sm font-bold uppercase border-4 border-red-600 h-[15%]">
-                            {/* <div
-                                // className="text-xs font-normal capitalize px-4 py-1 bg-yellow-300 rounded-sm"
-                                className={
-                                    isConfirmed
-                                        ? 'text-xs font-normal capitalize px-4 py-1 bg-gray-600 rounded-sm'
-                                        : 'text-xs font-normal capitalize px-4 py-1 bg-yellow-300 rounded-sm'
-                                }
-                                onClick={() => handleResetBet()}
-                            >
-                                Reset Bet
-                            </div> */}
-
-                            <p>
-                                credits:{' '}
-                                <span className="text-[#E26226]">
-                                    {totalCredits !== 0
-                                        ? `PHP ${parseFloat(totalCredits).toLocaleString()}.00`
-                                        : '0.00'}
-                                </span>
-                            </p>
-                            <p>
-                                total bet:{' '}
-                                <span className="text-[#E26226]">
-                                    {totalBet !== '' ? `PHP ${parseFloat(totalBet).toLocaleString()}.00` : '0.00'}
-                                </span>
-                            </p>
-                            <div className="flex items-center gap-2">
-                                <p>color:</p>
-                                <div
-                                    className="w-16 h-5 rounded-full"
-                                    style={{ backgroundColor: colorHex[selectedButton] }}
-                                ></div>
-                            </div>
+        <div className="h-full flex flex-col gap-10 items-center border-4 border-red-600">
+            <div className="lg:hidden lg:gap-0 gap-4 pt-14 h-screen w-full flex flex-col items-center border-4 border-blue-600">
+                <div className="relative w-full pb-[56.25%] border-2 border-yellow-600">
+                    <iframe
+                        //We'll use the padding bottom technique to maintain 16:9 ratio
+                        className="border-2 border-green-600 absolute w-full h-full"
+                        frameborder="0"
+                        allowfullscreen
+                        // width="1280"
+                        // height="720"
+                        src="https://demo.nanocosmos.de/nanoplayer/embed/1.3.3/nanoplayer.html?group.id=9b1e7c55-1db0-40e9-b443-07f0b5290dd3&options.adaption.rule=deviationOfMean2&startIndex=0&playback.latencyControlMode=classic"
+                    ></iframe>
+                </div>
+                <div className="flex w-[90%] h-auto uppercase text-sm font-semibold border-2 border-red-600">
+                    <div className="flex flex-2 items-center justify-between gap-2 border-2 border-red-600">
+                        <p className="w-full">credits:</p>
+                        <div className="text-[#E26226] font-['Poppins'] ">
+                            {totalCredits !== 0 ? ` ${parseFloat(totalCredits).toLocaleString()}.00` : '0.00'}
                         </div>
-                        <ColorInputs
-                            selectedButton={selectedButton}
-                            colorHex={colorHex}
-                            handleBetOnColor={handleBetOnColor}
-                        ></ColorInputs>
                     </div>
-                    <div className="flex flex-col flex-1 font-bold border-2 py-2 items-center border-green-600">
-                        <NumberInput
-                            numGroup1={numGroup1}
-                            numGroup2={numGroup2}
-                            numGroup3={numGroup3}
-                            betAmount={betAmount}
-                            handleButtonClick={handleButtonClick}
-                            handleClearButton={handleClearButton}
-                            handleMaxButton={handleMaxButton}
-                        />
-                        <div className="flex flex-1 w-[70%] items-center gap-4">
-                            <p className="uppercase">bet amount:</p>
-                            {/* <span className="text-2xl  mx-auto">PHP 5,000</span> */}
+                    <div className="flex flex-1 items-center justify-end gap-2 border-2 border-red-600">
+                        <p>color:</p>
+                        <div
+                            className="w-16 h-8 border-2 border-blue-600"
+                            style={{ backgroundColor: colorHex[selectedButton] }}
+                        ></div>
+                    </div>
+                </div>
+                <div className="flex flex-col w-[90%] p-2 gap-2 h-auto rounded-lg border-2 border-red-600">
+                    <div className="uppercase text-sm font-semibold flex flex-col items-center justify-center gap-2 border-2 border-green-600">
+                        <p>enter bet amount:</p>
+                        <div className="flex items-center justify-center px-2 py-2 border-2 border-black">
                             <input
                                 type="text"
                                 value={betAmount !== '' ? `PHP ${parseFloat(betAmount).toLocaleString()}` : 'PHP 0'}
-                                className="text-2xl  mx-auto text-[#E26226]"
+                                className="text-2xl text-center w-full mx-auto text-[#E26226] outline-none border-none"
                                 onChange={handleInputChange}
                                 // onKeyDown={handleKeyDown}
-                            ></input>
+                            />
+                            <p onClick={() => handleClearButton()}>clear</p>
                         </div>
-                        <div className="flex-1 border-2 w-[70%]">
+                        <div className="grid grid-cols-3 gap-2 w-full text-center border-2 border-red-600">
+                            {betButtons.map((button, key) => (
+                                <div
+                                    key={key}
+                                    className="p-2 rounded-full border-2 border-green-600"
+                                    onClick={() => handleInputButtonClick(button)}
+                                >
+                                    <p className="text-2xl">{button}</p>
+                                </div>
+                            ))}
+                            <div
+                                className="flex items-center justify-center rounded-full bg-[#00FF19]"
+                                onClick={handleConfirmBet}
+                            >
+                                <p>confirm</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="uppercase text-sm font-semibold flex flex-col items-center justify-center gap-2 border-2 border-blue-600">
+                        <p>select a color:</p>
+                        <ColorInputGrid
+                            selectedButton={selectedButton}
+                            colorHex={colorHex}
+                            handleBetOnColor={handleBetOnColor}
+                        />
+                    </div>
+                </div>
+            </div>
+            <div className="hidden h-screen w-[70%] lg:flex flex-col items-center border-4 border-blue-600">
+                <div className="relative w-[90%] pb-[50.625%] border-2 border-yellow-600">
+                    <iframe
+                        //We'll use the padding bottom technique to maintain 16:9 ratio
+                        className="border-2 border-green-600 absolute w-full h-full"
+                        frameborder="0"
+                        allowfullscreen
+                        // width="1280"
+                        // height="720"
+                        src="https://demo.nanocosmos.de/nanoplayer/embed/1.3.3/nanoplayer.html?group.id=9b1e7c55-1db0-40e9-b443-07f0b5290dd3&options.adaption.rule=deviationOfMean2&startIndex=0&playback.latencyControlMode=classic"
+                    ></iframe>
+                </div>
+                <div className="flex-1 flex flex-col w-[90%] h-auto border-2 border-red-600">
+                    <ColorInputs
+                        selectedButton={selectedButton}
+                        colorHex={colorHex}
+                        handleBetOnColor={handleBetOnColor}
+                    />
+                    <div className="border-4 border-blue-800 flex-1 grid grid-cols-3">
+                        <div className="numpad border-2 border-red-600">
+                            <NumberInput
+                                numGroup1={numGroup1}
+                                numGroup2={numGroup2}
+                                numGroup3={numGroup3}
+                                betAmount={betAmount}
+                                handleButtonClick={handleButtonClick}
+                                handleClearButton={handleClearButton}
+                                handleMaxButton={handleMaxButton}
+                            />
+                        </div>
+
+                        <div className="bet-info border-2 border-red-600 flex flex-col gap-6  items-center justify-center uppercase font-extrabold">
+                            <div className="w-[90%] grid grid-cols-2 gap-8 text-2xl">
+                                <div className="flex flex-col items-end gap-4 ">
+                                    <p className="font-['Poppins']">credits: </p>
+                                    <p className="font-['Poppins']">Bet Amount: </p>
+                                    <p className="font-['Poppins']">color: </p>
+                                </div>
+                                <div className="flex flex-col gap-4">
+                                    <div className="text-[#E26226] font-['Poppins']">
+                                        {totalCredits !== 0
+                                            ? `PHP ${parseFloat(totalCredits).toLocaleString()}.00`
+                                            : '0.00'}
+                                    </div>
+                                    <div className="text-[#E26226] font-['Poppins']">
+                                        {/* {totalBet !== '' ? `PHP ${parseFloat(totalBet).toLocaleString()}.00` : '0.00'} */}
+                                        <input
+                                            type="text"
+                                            value={
+                                                betAmount !== ''
+                                                    ? `PHP ${parseFloat(betAmount).toLocaleString()}`
+                                                    : 'PHP 0'
+                                            }
+                                            className="text-2xl w-full mx-auto text-[#E26226] border-2"
+                                            onChange={handleInputChange}
+                                            // onKeyDown={handleKeyDown}
+                                        ></input>
+                                    </div>
+                                    <div
+                                        className="w-full h-8 "
+                                        style={{ backgroundColor: colorHex[selectedButton] }}
+                                    ></div>
+                                </div>
+                            </div>
                             <Button
                                 variant="contained"
-                                className="h-full w-full"
+                                className="w-[90%]"
                                 style={{
-                                    backgroundColor: '#1FFF28',
-                                    color: 'black'
+                                    backgroundColor: '#14C61B',
+                                    color: 'black',
+                                    fontSize: '1rem',
+                                    paddingTop: '3%',
+                                    paddingBottom: '3%',
+                                    fontFamily: 'Poppins',
+                                    fontWeight: 'bold'
                                 }}
                                 onClick={handleConfirmBet}
                             >
                                 confirm
                             </Button>
+                            {/* <div className="bg-[#14C61B] w-[90%] py-2 text-lg text-center font-semibold">confirm</div> */}
                         </div>
+                        <div className="chat-feed border-2 border-red-600"></div>
                     </div>
                 </div>
             </div>
-            <div className="w-[1280px] h-auto border-2 border-green-600">
-                <h1 className="text-center text-3xl font-bold uppercase">bet history</h1>
-                <BetHistory />
+            <div className="w-full lg:w-[70%] flex items-center justify-center h-auto ">
+                <div className="w-[90%] flex flex-col gap-6">
+                    <h1 className="text-center text-3xl font-bold uppercase font-['Poppins']">bet history</h1>
+                    <BetHistory rows={rows} />
+                </div>
             </div>
         </div>
     );

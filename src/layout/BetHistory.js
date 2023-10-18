@@ -22,22 +22,24 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
-function createData(date, gameId, bet, betAmount, winLose, result) {
-    return {
-        date,
-        gameId,
-        bet,
-        betAmount,
-        winLose,
-        result
-    };
-}
+import { useEffect } from 'react';
 
-const rows = [
-    createData('2023-09-20', '29468', 'RED', 'P10', 'WIN', 'RED'),
-    createData('2023-09-21', '29469', 'YELLOW', 'P150', 'LOSS', 'BLACK'),
-    createData('2023-09-22', '29470', 'BLACK', 'P75', 'WIN', 'BLACK')
-];
+// function createData(date, gameId, bet, betAmount, winLose, result) {
+//     return {
+//         date,
+//         gameId,
+//         bet,
+//         betAmount,
+//         winLose,
+//         result
+//     };
+// }
+
+// const rows = [
+//     createData('2023-09-20', '29468', 'RED', 'P10', 'WIN', 'RED'),
+//     createData('2023-09-21', '29469', 'YELLOW', 'P150', 'LOSS', 'BLACK'),
+//     createData('2023-09-22', '29470', 'BLACK', 'P75', 'WIN', 'BLACK')
+// ];
 
 function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -124,7 +126,7 @@ function EnhancedTableHead(props) {
 
     return (
         <TableHead>
-            <TableRow className="border-2 border-red-600">
+            <TableRow>
                 {/* <TableCell padding="checkbox">
                     <Checkbox
                         color="primary"
@@ -143,11 +145,11 @@ function EnhancedTableHead(props) {
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}
                         style={{ fontWeight: 'bold', fontSize: '1rem' }} // Add this line
-                        className="border-2 border-green-600"
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}
                             direction={orderBy === headCell.id ? order : 'asc'}
+                            style={{ fontFamily: 'Poppins' }}
                             onClick={createSortHandler(headCell.id)}
                         >
                             {headCell.label}
@@ -203,9 +205,9 @@ function EnhancedTableToolbar(props) {
     );
 }
 
-const BetHistory = () => {
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
+const BetHistory = ({ rows }) => {
+    const [order, setOrder] = React.useState('desc');
+    const [orderBy, setOrderBy] = React.useState('date');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
@@ -264,7 +266,7 @@ const BetHistory = () => {
     const visibleRows = React.useMemo(
         () =>
             stableSort(rows, getComparator(order, orderBy)).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage),
-        [order, orderBy, page, rowsPerPage]
+        [order, orderBy, page, rowsPerPage, rows]
     );
 
     return (
@@ -293,7 +295,7 @@ const BetHistory = () => {
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
-                                        key={row.name}
+                                        key={index}
                                         selected={isItemSelected}
                                         sx={{ cursor: 'pointer' }}
                                     >
@@ -309,22 +311,22 @@ const BetHistory = () => {
                                         <TableCell component="th" id={labelId} scope="row" padding="none">
                                             {row.name}
                                         </TableCell> */}
-                                        <TableCell align="center" className="border-2 border-red-600">
+                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
                                             {row.date}
                                         </TableCell>
-                                        <TableCell align="center" className="border-2 border-red-600">
+                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
                                             {row.gameId}
                                         </TableCell>
-                                        <TableCell align="center" className="border-2 border-red-600">
+                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
                                             {row.bet}
                                         </TableCell>
-                                        <TableCell align="center" className="border-2 border-red-600">
+                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
                                             {row.betAmount}
                                         </TableCell>
-                                        <TableCell align="center" className="border-2 border-red-600">
+                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
                                             {row.winLose}
                                         </TableCell>
-                                        <TableCell align="center" className="border-2 border-red-600">
+                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
                                             {row.result}
                                         </TableCell>
                                     </TableRow>
