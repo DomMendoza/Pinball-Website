@@ -4,7 +4,7 @@ import { Alert, Button, ButtonGroup } from '@mui/material';
 
 const ColorInputs = ({ selectedButton, colorHex, handleBetOnColor }) => {
     return (
-        <div className="flex h-[15%] border-2 border-green-600">
+        <div className="flex h-[15%] border-2 border-black">
             <div
                 variant="contained"
                 className="h-full w-full"

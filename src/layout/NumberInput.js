@@ -13,7 +13,7 @@ const NumberInput = ({
 }) => {
     const numStyle = {
         color: 'black',
-        fontSize: '2.5rem',
+        fontSize: 'clamp(1.75rem, 1.25rem + 0.7813vw, 2.5rem)',
         fontFamily: 'Poppins',
         fontWeight: 'bold'
     };
@@ -73,7 +73,7 @@ const NumberInput = ({
                         border: '1px solid black',
                         backgroundColor: '#FFFF00',
                         color: 'black',
-                        fontSize: '1.5rem',
+                        fontSize: 'clamp(1.5rem, 1.5rem + 0vw, 1.5rem)',
                         fontFamily: 'Poppins',
                         fontWeight: 'bold'
                     }}
@@ -87,7 +87,7 @@ const NumberInput = ({
                     style={{
                         border: '1px solid black',
                         color: 'black',
-                        fontSize: '2.5rem',
+                        fontSize: 'clamp(1.75rem, 1.25rem + 0.7813vw, 2.5rem)',
                         fontFamily: 'Poppins',
                         fontWeight: 'bold',
                         position: 'relative'
@@ -107,7 +107,7 @@ const NumberInput = ({
                         border: '1px solid black',
                         backgroundColor: '#FF0000',
                         color: 'white',
-                        fontSize: '1.5rem',
+                        fontSize: 'clamp(1.5rem, 1.5rem + 0vw, 1.5rem)',
                         fontFamily: 'Poppins',
                         fontWeight: 'bold'
                     }}
