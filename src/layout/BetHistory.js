@@ -270,36 +270,43 @@ const BetHistory = ({ rows }) => {
     );
 
     return (
-        <Box sx={{ width: '100%' }}>
-            <Paper sx={{ width: '100%', mb: 2 }}>
-                {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
-                <TableContainer>
-                    <Table sx={{ minWidth: 750 }} aria-labelledby="tableTitle" size={dense ? 'small' : 'medium'}>
-                        <EnhancedTableHead
-                            numSelected={selected.length}
-                            order={order}
-                            orderBy={orderBy}
-                            onSelectAllClick={handleSelectAllClick}
-                            onRequestSort={handleRequestSort}
-                            rowCount={rows.length}
-                        />
-                        <TableBody>
-                            {visibleRows.map((row, index) => {
-                                const isItemSelected = isSelected(row.name);
-                                const labelId = `enhanced-table-checkbox-${index}`;
+        <div className="w-full lg:w-dynamicBorder flex items-center justify-center h-auto ">
+            <div className="w-[90%] lg:w-full flex flex-col gap-6">
+                <h1 className="text-center text-dynamicMid font-bold uppercase font-['Poppins']">bet history</h1>
+                <Box sx={{ width: '100%' }}>
+                    <Paper sx={{ width: '100%', mb: 2 }}>
+                        {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
+                        <TableContainer>
+                            <Table
+                                sx={{ minWidth: 750 }}
+                                aria-labelledby="tableTitle"
+                                size={dense ? 'small' : 'medium'}
+                            >
+                                <EnhancedTableHead
+                                    numSelected={selected.length}
+                                    order={order}
+                                    orderBy={orderBy}
+                                    onSelectAllClick={handleSelectAllClick}
+                                    onRequestSort={handleRequestSort}
+                                    rowCount={rows.length}
+                                />
+                                <TableBody>
+                                    {visibleRows.map((row, index) => {
+                                        const isItemSelected = isSelected(row.name);
+                                        const labelId = `enhanced-table-checkbox-${index}`;
 
-                                return (
-                                    <TableRow
-                                        hover
-                                        onClick={(event) => handleClick(event, row.name)}
-                                        role="checkbox"
-                                        aria-checked={isItemSelected}
-                                        tabIndex={-1}
-                                        key={index}
-                                        selected={isItemSelected}
-                                        sx={{ cursor: 'pointer' }}
-                                    >
-                                        {/* <TableCell padding="checkbox">
+                                        return (
+                                            <TableRow
+                                                hover
+                                                onClick={(event) => handleClick(event, row.name)}
+                                                role="checkbox"
+                                                aria-checked={isItemSelected}
+                                                tabIndex={-1}
+                                                key={index}
+                                                selected={isItemSelected}
+                                                sx={{ cursor: 'pointer' }}
+                                            >
+                                                {/* <TableCell padding="checkbox">
                                             <Checkbox
                                                 color="primary"
                                                 checked={isItemSelected}
@@ -311,51 +318,53 @@ const BetHistory = ({ rows }) => {
                                         <TableCell component="th" id={labelId} scope="row" padding="none">
                                             {row.name}
                                         </TableCell> */}
-                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
-                                            {row.date}
-                                        </TableCell>
-                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
-                                            {row.gameId}
-                                        </TableCell>
-                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
-                                            {row.bet}
-                                        </TableCell>
-                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
-                                            {row.betAmount}
-                                        </TableCell>
-                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
-                                            {row.winLose}
-                                        </TableCell>
-                                        <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
-                                            {row.result}
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })}
-                            {emptyRows > 0 && (
-                                <TableRow
-                                    style={{
-                                        height: (dense ? 33 : 53) * emptyRows
-                                    }}
-                                >
-                                    <TableCell colSpan={6} />
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-                <TablePagination
-                    rowsPerPageOptions={[5, 10, 25]}
-                    component="div"
-                    count={rows.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                />
-            </Paper>
-            {/* <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" /> */}
-        </Box>
+                                                <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
+                                                    {row.date}
+                                                </TableCell>
+                                                <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
+                                                    {row.gameId}
+                                                </TableCell>
+                                                <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
+                                                    {row.bet}
+                                                </TableCell>
+                                                <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
+                                                    {row.betAmount}
+                                                </TableCell>
+                                                <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
+                                                    {row.winLose}
+                                                </TableCell>
+                                                <TableCell align="center" style={{ fontFamily: 'Poppins' }}>
+                                                    {row.result}
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                                    {emptyRows > 0 && (
+                                        <TableRow
+                                            style={{
+                                                height: (dense ? 33 : 53) * emptyRows
+                                            }}
+                                        >
+                                            <TableCell colSpan={6} />
+                                        </TableRow>
+                                    )}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            component="div"
+                            count={rows.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                    </Paper>
+                    {/* <FormControlLabel control={<Switch checked={dense} onChange={handleChangeDense} />} label="Dense padding" /> */}
+                </Box>
+            </div>
+        </div>
     );
 };
 
