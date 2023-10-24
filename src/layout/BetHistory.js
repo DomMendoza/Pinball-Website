@@ -24,6 +24,8 @@ import { visuallyHidden } from '@mui/utils';
 
 import { useEffect } from 'react';
 
+import { getBetHistory } from '../services/getBetHistory';
+
 // function createData(date, gameId, bet, betAmount, winLose, result) {
 //     return {
 //         date,
@@ -205,13 +207,42 @@ function EnhancedTableToolbar(props) {
     );
 }
 
-const BetHistory = ({ rows }) => {
+const BetHistory = ({ userToken }) => {
     const [order, setOrder] = React.useState('desc');
     const [orderBy, setOrderBy] = React.useState('date');
     const [selected, setSelected] = React.useState([]);
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [rows, setRows] = React.useState([]);
+
+    //GET BET HISTORY OF THE PLAYER
+    useEffect(() => {
+        const fetchData = async () => {
+            // console.log('userToken bet history: ', userToken);
+            try {
+                const response = await getBetHistory(userToken);
+                // console.log('Response front:', response);
+                const updatedRows = response.map((item) => {
+                    return {
+                        date: item.createdAt.slice(0, 10),
+                        gameId: item.game_id,
+                        bet: item.bet_data,
+                        betAmount: item.amount,
+                        winLose: item.status,
+                        result: ''
+                    };
+                });
+
+                setRows(updatedRows);
+            } catch (error) {
+                console.error('Error:', error.message);
+                window.alert('An error occurred while placing the bet. Please try again later.');
+            }
+        };
+
+        fetchData(); // Call the fetchData function
+    }, []);
 
     const handleRequestSort = (event, property) => {
         const isAsc = orderBy === property && order === 'asc';
