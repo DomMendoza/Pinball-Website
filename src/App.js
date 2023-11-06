@@ -8,7 +8,6 @@ import '@fontsource/roboto/700.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LiveGameStreamPage from './pages/LiveGameStreamPage';
 import Login from './pages/LoginPage';
-// import AdminPage from './pages/AdminPage';
 
 function App() {
     return (

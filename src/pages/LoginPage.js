@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../context/AuthProvider';
 
 const LoginPage = () => {
     const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const { setAuthToken } = useAuth();
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -22,6 +24,7 @@ const LoginPage = () => {
                 alert('User Login Successfully');
                 const userToken = login.data.token;
                 Cookies.set('userToken', userToken);
+                setAuthToken(userToken); //SET TOKEN FOR THE USER
                 navigate('/game/pinball');
             } else {
                 alert('Login failed. Please check your credentials.');
