@@ -11,6 +11,7 @@ import Login from './pages/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
+    //appjs
     return (
         <div className="App">
             <Router>
