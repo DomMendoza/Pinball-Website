@@ -2,7 +2,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import OBSWebSocket from 'obs-websocket-js';
-import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
 // import jwt from 'jsonwebtoken';
 
@@ -18,7 +17,7 @@ import DesktopResponsive from '../layout/DesktopResponsive';
 import { ModalProvider } from '../context/AddCreditsModalContext';
 import { LiveStreamProvider } from '../context/LiveStreamContext';
 
-const LiveGameStreamPage = () => {
+const LiveGameStreamPage = ({ userToken }) => {
     const [isOpen, setIsOpen] = useState(false); //modal state*
     const [userId, setUserId] = useState(''); //user id state*
     // const [rows, setRows] = useState([]); //bet history rows*
@@ -27,8 +26,6 @@ const LiveGameStreamPage = () => {
 
     const obsAddress = 'ws://127.0.0.1:4455';
     const obs = new OBSWebSocket();
-
-    const userToken = Cookies.get('userToken'); //*
 
     //USER LOGIN CREDENTIAL
     useEffect(() => {

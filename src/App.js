@@ -17,7 +17,7 @@ function App() {
                 <Routes>
                     <Route path="/" element={<Login />} />
                     {/* <Route path="/game/pinball" element={<LiveGameStreamPage />} /> */}
-                    <Route exact path="/game/pinball" element={<ProtectedRoute Component={LiveGameStreamPage} />} />
+                    <Route exact path="/game/pinball" element={<ProtectedRoute />} />
                 </Routes>
             </Router>
         </div>
