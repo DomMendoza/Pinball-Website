@@ -8,6 +8,7 @@ import '@fontsource/roboto/700.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LiveGameStreamPage from './pages/LiveGameStreamPage';
 import Login from './pages/LoginPage';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
@@ -15,7 +16,8 @@ function App() {
             <Router>
                 <Routes>
                     <Route path="/" element={<Login />} />
-                    <Route path="/game/pinball" element={<LiveGameStreamPage />} />
+                    {/* <Route path="/game/pinball" element={<LiveGameStreamPage />} /> */}
+                    <Route exact path="/game/pinball" element={<ProtectedRoute Component={LiveGameStreamPage} />} />
                 </Routes>
             </Router>
         </div>

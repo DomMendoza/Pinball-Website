@@ -4,7 +4,6 @@ import axios from 'axios';
 import OBSWebSocket from 'obs-websocket-js';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
-import { useNavigate } from 'react-router-dom';
 // import jwt from 'jsonwebtoken';
 
 //LAYOUTS FOLDER
@@ -18,12 +17,8 @@ import DesktopResponsive from '../layout/DesktopResponsive';
 //CONTEXT
 import { ModalProvider } from '../context/AddCreditsModalContext';
 import { LiveStreamProvider } from '../context/LiveStreamContext';
-import { useAuth } from '../context/AuthProvider';
 
 const LiveGameStreamPage = () => {
-    const navigate = useNavigate();
-    const { authToken } = useAuth();
-
     const [isOpen, setIsOpen] = useState(false); //modal state*
     const [userId, setUserId] = useState(''); //user id state*
     // const [rows, setRows] = useState([]); //bet history rows*
@@ -37,29 +32,23 @@ const LiveGameStreamPage = () => {
 
     //USER LOGIN CREDENTIAL
     useEffect(() => {
-        //CHECK IF THE USER HAS TOKEN
-        if (!authToken) {
-            alert('Please check your credentials.');
-            navigate('/');
-        } else {
-            const baseUrl = process.env.REACT_APP_BACKEND_URL;
-            const headers = {
-                Authorization: `Bearer ${userToken}`
-            };
-            axios
-                .get(`${baseUrl}/user/check/session`, { headers })
-                .then((response) => {
-                    if (response.status === 200) {
-                        setUserId(response.data.userSessionDets.user_id);
-                    } else {
-                        console.log('User session is not active.');
-                    }
-                })
-                .catch((error) => {
-                    console.error('Error checking user session:', error);
-                    console.log('Error checking user session.');
-                });
-        }
+        const baseUrl = process.env.REACT_APP_BACKEND_URL;
+        const headers = {
+            Authorization: `Bearer ${userToken}`
+        };
+        axios
+            .get(`${baseUrl}/user/check/session`, { headers })
+            .then((response) => {
+                if (response.status === 200) {
+                    setUserId(response.data.userSessionDets.user_id);
+                } else {
+                    console.log('User session is not active.');
+                }
+            })
+            .catch((error) => {
+                console.error('Error checking user session:', error);
+                console.log('Error checking user session.');
+            });
     }, []);
 
     // //FETCH USER WALLET BALANCE
